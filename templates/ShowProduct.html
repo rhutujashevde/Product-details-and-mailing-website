@@ -5,6 +5,18 @@
 
 <h2><strong>Price</strong>- {{ product.price }}</h2>
 </br>
+<img src="{{product.image_path}}">
 <h2>{{product.description}}</h2>
 </br></br>
-      {% endblock %}
+
+       <form method = "POST" action = "{{url_for('showproduct', product_id = product.id)}}">
+    <div class = "form-group">
+    <h2 >Want these details in your mail? Enter your email id below:</h2>
+  <h5>Name:</h5>
+  <input class = "form-control" type = "text" size = "30" name = "name">
+    <h5>Email:</h5>
+  <input class = "form-control" type = "text" size = "30" name = "emailid">
+    <button class = "btn btn-lg btn-info btn-block main-font" type = "submit">ADD</button>
+  </div>
+  </form>
+  {% endblock %}

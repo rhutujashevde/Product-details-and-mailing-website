@@ -14,12 +14,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+ os.path.join(BASEDIR,'data
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config.update(
     DEBUG=True,
-    #EMAIL SETTINGS
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME = 'projectSARmail@gmail.com',
-    MAIL_PASSWORD = 'rhutuja1234'
+    MAIL_USERNAME = 'dummyflaskmail@gmail.com',
+    MAIL_PASSWORD = 'dummydummy'
     )
 
 mail = Mail(app)
@@ -39,23 +38,17 @@ def homepage():
     products = Products.query.all()
     return render_template("homepage.html", products = products)
 
-@app.route('/show-product/<int:product_id>')
+@app.route('/show-product/<int:product_id>', methods=['GET', 'POST'])
 def showproduct(product_id):
     product = Products.query.filter_by(id=product_id).one()
+    if request.method == 'POST':
+        msg = Message("Product Details",
+        sender="dummyflaskmail@gmail.com",
+        recipients=[request.form['emailid']])
+        msg.body = '<h1>Hey '+ request.form['name'] + '</h1>'     
+        mail.send(msg)
+        return render_template("ShowProduct.html", product=product) 
     return render_template("ShowProduct.html", product=product)
-
-@app.route('/contactus', methods=['GET', 'POST'])
-def contactus():
-    form = ContactUsForm(request.form)
- 
-    if form.validate_on_submit():
-       msg = Message(form.yourname.data,
-        sender="projectSARmail@gmail.com",
-        recipients=['greataakarshan@gmail.com'])
-       msg.body = 'By '+form.yourname.data+',\n'+form.feedback.data           
-       mail.send(msg)
-       return render_template('mailsent.html')
-    return render_template('contactus.html', form=form) 
 
 db.create_all()
 
