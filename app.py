@@ -36,11 +36,11 @@ class Products(db.Model):
 
 @app.route('/')
 def homepage():
-    products = Products.query.order_by(id).limit(10)
+    products = Products.query.all()
     return render_template("homepage.html", products = products)
 
 @app.route('/show-product/<int:product_id>')
-def showproduct(anime_id):
+def showproduct(product_id):
     product = Products.query.filter_by(id=product_id).one()
     return render_template("ShowProduct.html", product=product)
 
