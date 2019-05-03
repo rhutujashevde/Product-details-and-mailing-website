@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-sm-4">
+<div class="col-sm-8 jumbotron">
+    <h1 class= "main-font">Recent products</h1>
+        {% for product in products %}
+    <h5><li>
+      <a class= "main-font text-dark" href = "{{url_for('showproduct', product_id = product.id)}}">{{ product.name }}</a>
+    </li></h5>
+    {% endfor %}
+    <br>
+    </div>
+    <br>
+
+        {% endblock %}
