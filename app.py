@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_admin import Admin
@@ -33,9 +33,12 @@ class Products(db.Model):
         manufacturer = db.Column(db.String(50), nullable=False)
         image_path = db.Column(db.String(100), nullable=False)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def homepage():
     products = Products.query.all()
+    if request.method == 'POST':
+        search = Products.query.filter_by(name = request.form['prod']).first()
+        return redirect(url_for('showproduct', product_id = search.id))
     return render_template("homepage.html", products = products)
 
 @app.route('/show-product/<int:product_id>', methods=['GET', 'POST'])
@@ -47,6 +50,7 @@ def showproduct(product_id):
         recipients=[request.form['emailid']])
         msg.body = '<h1>Hey '+ request.form['name'] + '</h1>'     
         mail.send(msg)
+        flash("Mail sent!!")
         return render_template("ShowProduct.html", product=product) 
     return render_template("ShowProduct.html", product=product)
 
